@@ -1,0 +1,7 @@
+To compile:
+sh run.sh
+
+"Usage: ptime_jitter -f fname -std tname (-pt tname) -o oname \n"
+"Calculate the jitter parameter\n"
+fname: residuals.dat files produced by tempo2; tname: templates; oname: output .tim; -std: standard template format; -pt: ptime template;\n"
+
