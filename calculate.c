@@ -367,7 +367,7 @@ double u_0 (double *y, int nphase, double psrfreq)
 
 	printf ("u_1: %.10lf \n", u_1);
 	printf ("u_2: %.10lf \n", u_2);
-	//printf ("%lf \n", sqrt((u_2/u_1))*1.0e+6);
+	printf ("sqrt((u_2/u_1)) (microsecond): %lf \n", sqrt((u_2/u_1))*1.0e+6);
 	printf ("U0: %lf \n", U0*1e+6);
 
     return U0;
