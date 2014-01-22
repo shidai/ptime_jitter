@@ -58,8 +58,6 @@ int readResi (char *filename, double *resi, double *error)
     return 0;
 }
 
-
-// read PSRFITS
 double read_psrfreq ( char *name )
 //int main(int argc, char *argv[])
 {
@@ -78,9 +76,10 @@ double read_psrfreq ( char *name )
 	
 	char freq[100];
 	char F0[100];
+	double a[10];
 
 	int colnum = 1;
-    int frow = 4;
+    int frow;
     int	felem = 1;
     int nelem = 1;
     int	anynull = 0;
@@ -90,46 +89,48 @@ double read_psrfreq ( char *name )
 	line = (char **)malloc(sizeof(char *));
 	line[0] = (char *)malloc(sizeof(char)*1024);
 
-	fits_read_col(fptr, TSTRING, colnum, frow, felem, nelem, nval, line, &anynull, &status);           // read the column
-
-	//puts(line[0]);
-
-	int nchar = strlen(line[0]);
-	//printf("strlen %d\n", nchar);
-
-	int i;
-	for (i = 0; i < nchar; i++)
+	for (frow = 1; frow < 20; frow++)
 	{
-		F0[i] = line[0][i];
-	}
-	//printf("F0 %s\n", F0);
+		fits_read_col(fptr, TSTRING, colnum, frow, felem, nelem, nval, line, &anynull, &status);           // read the column
 
-	double a[10];
-	int l = 0;
-	int j = 0;
-	for (i = 0; i < nchar; i++)
-	{
-		if( (F0[i] >= '0' && F0[i] <= '9') || F0[i] =='.' ) 
-		{ 
-			freq[l] = F0[i];
-			l++;
-		}
-		else if(l > 0)
+		//puts(line[0]);
+
+		int nchar = strlen(line[0]);
+		//printf("strlen %d\n", nchar);
+
+		if (line[0][0] == 'F' && line[0][1] == '0')
 		{
-			freq[l] = '\0';
-			a[j]=atof(freq);
-			j++;
-			l=0;
+			int i;
+			for (i = 0; i < nchar; i++)
+			{
+				F0[i] = line[0][i];
+			}
+			F0[nchar] = '\0';
+			//printf("F0: %s\n", F0);
+
+			int l = 0;
+			int j = 0;
+			for (i = 0; i < nchar+1; i++)
+			{
+				//printf("%c\n", F0[i]);
+				if( (F0[i] >= '0' && F0[i] <= '9') || F0[i] =='.' ) 
+				{ 
+					freq[l] = F0[i];
+					l++;
+				}
+				else if(l > 0)
+				{
+					freq[l] = '\0';
+					a[j]=atof(freq);
+					//printf("a[%d]: %f\n", j, a[j]);
+					j++;
+					l=0;
+				}
+			}
+			break;
 		}
 	}
 
-	/*
-	for(i = 0; i < j; i++)
-	{
-        printf("%.15lf\n", a[i]);
-	}
-	*/
- 
 	double psrfreq;
 	psrfreq = a[1];
 
